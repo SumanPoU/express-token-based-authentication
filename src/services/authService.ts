@@ -1,0 +1,161 @@
+import db from '../config/prisma';
+import { hashPassword, comparePassword } from '../lib/passwordHash.utils';
+import { isUserExists, getDefaultRoleId } from '../lib/user.utils';
+import { VerificationTokenService } from '../lib/verificationToken.utils';
+import { AuthMailService } from '../lib/authMail';
+import { jwtService } from '@/lib/generateToken.utils';
+import { createUserSession } from '@/lib/session.utils';
+import { PROVIDER, CREDENTIALS_TYPES, VERIFICATION_TOKEN_TYPES } from '../constant/user';
+import logger from '../middleware/logger';
+import type { UserPayload } from '../types/user';
+import message from '../constant/message';
+// import { CryptoService } from '../config/encryption';
+
+type VerificationTokenType = keyof typeof VERIFICATION_TOKEN_TYPES;
+
+export class AuthService {
+  constructor(
+    private verificationTokenService = VerificationTokenService,
+    private authMailService = AuthMailService,
+  ) {}
+
+  /*
+   *  Register a new user
+   */
+  public async registerUser({
+    displayName,
+    email,
+    userName,
+    password,
+    roleId,
+  }: any): Promise<UserPayload> {
+    // 1️⃣ Check if user exists
+    if (await isUserExists(email, userName)) {
+      throw { status: 409, message: message.auth.register.REGISTER_USER_EXISTS };
+    }
+
+    // 2️⃣ Hash password
+    const hashedPassword = await hashPassword(password);
+
+    // 3️⃣ Determine role
+    const assignedRoleId = roleId || (await getDefaultRoleId());
+    if (!assignedRoleId) {
+      throw { status: 500, message: message.auth.role.DEFAULT_ROLE_NOT_FOUND };
+    }
+
+    // 4️⃣ Create user
+    const user = await db.user.create({
+      data: {
+        displayName,
+        email,
+        userName,
+        password: hashedPassword,
+        roleId: assignedRoleId,
+        accounts: {
+          create: {
+            type: CREDENTIALS_TYPES.credentials,
+            provider: PROVIDER.local,
+            providerAccountId: email,
+          },
+        },
+      },
+      select: { id: true, displayName: true, email: true, userName: true, roleId: true },
+    });
+
+    // 5️⃣ Token & Email
+    await this.createAndSendToken(email, VERIFICATION_TOKEN_TYPES.REGISTER_USER);
+
+    return { ...user, role: [] };
+  }
+
+  /*
+   *  Resend verification email
+   */
+  public async resendVerificationEmail(email: string) {
+    const user = await db.user.findUnique({ where: { email } });
+    if (!user) throw { status: 404, message: message.auth.user.USER_NOT_FOUND };
+    if (user.emailVerified)
+      throw { status: 400, message: message.auth.email.EMAIL_ALREADY_VERIFIED };
+
+    await this.createAndSendToken(email, VERIFICATION_TOKEN_TYPES.REGISTER_USER);
+  }
+
+  /*
+   *  Login User
+   */
+  public async loginUser({ email, userName, password, deviceInfo, ipAddress, userAgent }: any) {
+    const user = await db.user.findFirst({
+      where: { OR: [{ email }, { userName }] },
+      include: { role: true },
+    });
+    if (!user) throw { status: 404, message: message.auth.user.USER_NOT_FOUND };
+    if (!user.emailVerified) throw { status: 403, message: message.auth.email.EMAIL_NOT_VERIFIED };
+
+    const isPasswordValid = await comparePassword(password, user.password!);
+    if (!isPasswordValid) throw { status: 401, message: message.auth.login.PASSWORD_INVALID };
+
+    const userPayload = {
+      id: user.id,
+      email: user.email,
+      userName: user.userName,
+      displayName: user.displayName,
+      roleId: user.roleId,
+      role: user.role ? [user.role] : [],
+    };
+
+    const tokens = jwtService.generateAuthTokens(userPayload);
+    await createUserSession(user.id, tokens.refreshToken, deviceInfo, ipAddress, userAgent);
+
+    return { user: userPayload, tokens };
+  }
+
+  /*
+   * Verify email using token + encrypted email
+   */
+  public async verifyEmail(token: string, email: string) {
+    // 1️⃣ Basic validation
+    if (!token || !email) {
+      throw { status: 400, message: message.auth.token.TOKEN_INVALID_OR_EXPIRED };
+    }
+
+    // 2️⃣ Verify token with email as identifier
+    const record = await this.verificationTokenService.verify(
+      token,
+      email,
+      VERIFICATION_TOKEN_TYPES.REGISTER_USER,
+    );
+
+    if (!record) {
+      throw { status: 400, message: message.auth.token.TOKEN_INVALID_OR_EXPIRED };
+    }
+
+    // 3️⃣ Update user emailVerified
+    await db.user.update({
+      where: { email },
+      data: { emailVerified: new Date() },
+    });
+
+    // 4️⃣ Delete token after successful verification
+    await this.verificationTokenService.delete(token, email);
+
+    return { email, verified: true };
+  }
+
+  /*
+   *  Private helper: Create token + send verification email
+   */
+  private async createAndSendToken(email: string, type: VerificationTokenType): Promise<string> {
+    // 1️⃣ Create token (VerificationTokenService already throws correct errors)
+    const token = await this.verificationTokenService.create(email, type, 5, 5);
+
+    // 2️⃣ Send verification email (log failures, don't fail the flow)
+    try {
+      await this.authMailService.sendVerificationEmail(email, token);
+      logger.info(`Verification email sent to ${email}`);
+    } catch (emailError) {
+      logger.error(`Failed to send verification email to ${email}`, emailError);
+    }
+
+    return token;
+  }
+}

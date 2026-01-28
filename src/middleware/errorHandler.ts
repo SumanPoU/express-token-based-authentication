@@ -8,7 +8,12 @@ import logger from './logger';
  * @param res - Express response
  * @param next - Express next function
  */
-const errorHandler = (err: unknown, _req: Request, res: Response, _next?: NextFunction): void => {
+const errorHandler = (
+  err: unknown,
+  _req: Request,
+  res: Response,
+  //  _next?: NextFunction
+): void => {
   // Normalize error
   const statusCode = (err as any)?.status || 500;
   const message = (err as any)?.message || 'Internal Server Error';

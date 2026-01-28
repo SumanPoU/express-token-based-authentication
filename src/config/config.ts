@@ -13,6 +13,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['production', 'development', 'test']),
   PORT: z.coerce.number().default(4000),
   SERVER_URL: z.string().url(),
+  APP_NAME: z.string().default('MyApp'),
   ALLOWED_ORIGINS: z.string().default('*'),
   DATABASE_URL: z.string().min(1),
   ACCESS_TOKEN_SECRET: z.string().min(8),
@@ -20,6 +21,7 @@ const envSchema = z.object({
   REFRESH_TOKEN_SECRET: z.string().min(8),
   REFRESH_TOKEN_EXPIRE: z.string().default('1d'),
   REFRESH_TOKEN_COOKIE_NAME: z.string().default('jid'),
+  ACCESS_TOKEN_COOKIE_NAME: z.string().default('atj'),
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   BCRYPT_ROUNDS: z.coerce.number().default(10),
@@ -31,6 +33,8 @@ const envSchema = z.object({
   EMAIL_FROM: z.string().email(),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(150000),
   RATE_LIMIT_MAX_REQUESTS: z.coerce.number().default(100),
+  ENCRYPTION_KEY: z.string().min(32).max(32),
+  IV_LENGTH: z.coerce.number().default(16),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -44,6 +48,8 @@ const env = parsedEnv.data;
 
 const config = {
   nodeEnv: env.NODE_ENV,
+
+  appName: env.APP_NAME,
 
   server: {
     port: env.PORT,
@@ -64,13 +70,14 @@ const config = {
 
   jwt: {
     accessToken: {
-      secret: env.ACCESS_TOKEN_SECRET,
-      expiresIn: env.ACCESS_TOKEN_EXPIRE,
+      secret: env.ACCESS_TOKEN_SECRET as string,
+      expiresIn: env.ACCESS_TOKEN_EXPIRE as string | number,
+      cookieName: env.ACCESS_TOKEN_COOKIE_NAME as string,
     },
     refreshToken: {
-      secret: env.REFRESH_TOKEN_SECRET,
-      expiresIn: env.REFRESH_TOKEN_EXPIRE,
-      cookieName: env.REFRESH_TOKEN_COOKIE_NAME,
+      secret: env.REFRESH_TOKEN_SECRET as string,
+      expiresIn: env.REFRESH_TOKEN_EXPIRE as string | number,
+      cookieName: env.REFRESH_TOKEN_COOKIE_NAME as string,
     },
   },
 
@@ -97,6 +104,10 @@ const config = {
   rateLimit: {
     windowMs: env.RATE_LIMIT_WINDOW_MS,
     max: env.RATE_LIMIT_MAX_REQUESTS,
+  },
+  encryption: {
+    encryptionKey: env.ENCRYPTION_KEY,
+    ivLength: env.IV_LENGTH,
   },
 } as const;
 

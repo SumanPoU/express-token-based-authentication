@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { z, type ZodObject, ZodError, type ZodIssue } from 'zod';
+import { type ZodObject, ZodError, type ZodIssue } from 'zod';
 import httpStatus from 'http-status';
 import type { RequireAtLeastOne } from '../types/type';
 import { sendError } from './response';
