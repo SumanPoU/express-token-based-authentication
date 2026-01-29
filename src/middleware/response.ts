@@ -18,7 +18,7 @@ export const sendSuccess = <T = unknown>(
   res: Response,
   message: string,
   data?: T,
-  statusCode = 200,
+  statusCode: number = 200, // explicitly number
 ): Response => {
   const payload: ResponseData<T> = {
     success: true,
@@ -39,7 +39,7 @@ export const sendError = (
   res: Response,
   message: string,
   errors?: { field: string; message: string }[],
-  statusCode = 400,
+  statusCode: number = 400, // explicitly number
 ): Response => {
   const payload: ResponseData = {
     success: false,

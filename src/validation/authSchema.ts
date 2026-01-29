@@ -87,16 +87,14 @@ export const LoginSchema = IdentifierSchema.extend({
 export const ForgotPasswordSchema = IdentifierSchema;
 
 // Reset Password
-export const ResetPasswordSchema = z
-  .object({
-    token: noSqlInjection('Reset token'),
-    password: StrongPasswordSchema,
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: 'Passwords do not match',
-  });
+export const ForgetPasswordSetSchema = IdentifierSchema.extend({
+  token: noSqlInjection('forget password token'),
+  password: StrongPasswordSchema,
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  path: ['confirmPassword'],
+  message: 'Passwords do not match',
+});
 
 // Confirm Password
 export const ConfirmPasswordSchema = z.object({
@@ -120,13 +118,23 @@ export const ResendVerificationSchema = z.object({
   email: z.string().email('Invalid email address'),
 });
 
+//verify email
+export const VerifyEmailSchema = z.object({
+  token: noSqlInjection('verify email token'),
+  email: z.string().email('Invalid email address'),
+});
+
+export const LogoutSchema = z.object({
+  refreshToken: z.string().min(1, 'Refresh token is required'),
+});
+
 /**
  * Types
  */
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
 export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>;
-export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;
+export type ForgetPasswordSetInput = z.infer<typeof ForgetPasswordSetSchema>;
 export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>;
 export type ConfirmPasswordInput = z.infer<typeof ConfirmPasswordSchema>;
 export type ResendVerificationInput = z.infer<typeof ResendVerificationSchema>;

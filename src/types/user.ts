@@ -1,10 +1,15 @@
+export interface RolePayload {
+  id: string;
+  name: string;
+}
+
 export interface UserPayload {
   id: string;
   email: string;
   userName?: string | null;
   displayName?: string | null;
   roleId?: string | null;
-  role?: any[];
+  role?: RolePayload[];
 }
 
 export interface AccessTokenPayload {
@@ -13,7 +18,7 @@ export interface AccessTokenPayload {
   userName?: string | null;
   displayName?: string | null;
   roleId?: string | null;
-  role?: any[];
+  role?: RolePayload[]; // <-- strongly typed
 }
 
 export interface RefreshTokenPayload {
@@ -35,5 +40,5 @@ export interface User {
   deletedAt?: Date | null;
   createdAt?: Date;
   updatedAt?: Date;
-  role?: any[];
+  role?: RolePayload[];
 }

@@ -59,10 +59,17 @@ const message = {
       EMAIL_NOT_VERIFIED: 'Email is not verified. Please verify your email before logging in.',
       ENCRYPTION_EMAIL_REQUIRED: 'Encrypted email is required.',
       EMAIL_REQUIRED: 'Email is required.',
+      FORGOT_PASSWORD_SUCCESS_MAIL_SENT: 'Password reset email has been sent.',
     },
 
     user: {
       USER_NOT_FOUND: 'User not found.',
+      USER_DISABLED: 'User account is disabled.',
+      USER_DELETED: 'User account is deleted.',
+    },
+
+    password: {
+      PASSWORD_REQUIRED: 'Password is required.',
     },
 
     role: {
@@ -77,6 +84,17 @@ const message = {
       VERIFICATION_TOKEN_INVALID: 'Invalid verification token.',
       TYPE_INVALID: 'Invalid type parameter.',
     },
+
+    logout: {
+      LOGOUT_SUCCESS: 'Successfully logged out.',
+      LOGOUT_FAILURE: 'Failed to log out. Please try again later.',
+      SESSION_NOT_FOUND: 'Session not found or already logged out',
+      LOGOUT_FROM_ALL_DEVICES_SUCCESS: 'Successfully logged out from all devices.',
+    },
+  },
+  middleware: {
+    AUTHORIZATION_HEADER_MISSING: 'Authorization header missing or malformed',
+    INVALID_OR_EXPIRED_TOKEN: 'Invalid or expired token',
   },
 };
 

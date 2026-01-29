@@ -68,22 +68,102 @@ export class AuthController {
   public verifyEmail = async (req: Request, res: Response) => {
     try {
       const { token, email } = req.body;
-
-      // ✅ Validate body
-      if (!token || typeof token !== 'string') {
-        return sendError(res, message.auth.token.VERIFICATION_TOKEN_REQUIRED, undefined, 400);
-      }
-
-      if (!email || typeof email !== 'string') {
-        return sendError(res, message.auth.email.EMAIL_REQUIRED, undefined, 400);
-      }
-
       const result = await authService.verifyEmail(token, email);
       return sendSuccess(res, message.auth.verifyEmail.VERIFY_EMAIL_SUCCESS, result, 200);
     } catch (err: any) {
       return sendError(
         res,
         err.message || message.auth.verifyEmail.VERIFY_EMAIL_FAILURE,
+        undefined,
+        err.status || 500,
+      );
+    }
+  };
+
+  /*
+   * Controller: Forgot Password
+   */
+  public SendForgotPasswordEmail = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      const result = await authService.sendForgetPasswordEmail(email);
+      return sendSuccess(res, message.auth.email.FORGOT_PASSWORD_SUCCESS_MAIL_SENT, result, 200);
+    } catch (err: any) {
+      return sendError(
+        res,
+        err.message || message.auth.email.EMAIL_SEND_FAILURE,
+        undefined,
+        err.status || 500,
+      );
+    }
+  };
+
+  /*
+   * Controller: Forgot Password Set
+   */
+  public ForgetPasswordSet = async (req: Request, res: Response) => {
+    try {
+      const { token, email, password } = req.body;
+      const result = await authService.forgetPasswordSet(token, email, password);
+      return sendSuccess(res, message.auth.resetPassword.RESET_PASSWORD_SUCCESS, result, 200);
+    } catch (err: any) {
+      return sendError(
+        res,
+        err.message || message.auth.resetPassword.RESET_PASSWORD_FAILURE,
+        undefined,
+        err.status || 500,
+      );
+    }
+  };
+
+  /*
+   * Controller: Reset Password
+   */
+  public ResetPassword = async (req: Request, res: Response) => {
+    try {
+      const { email, oldPassword, newPassword } = req.body;
+      const result = await authService.resetPassword(email, oldPassword, newPassword);
+      return sendSuccess(res, message.auth.resetPassword.RESET_PASSWORD_SUCCESS, result, 200);
+    } catch (err: any) {
+      return sendError(
+        res,
+        err.message || message.auth.resetPassword.RESET_PASSWORD_FAILURE,
+        undefined,
+        err.status || 500,
+      );
+    }
+  };
+
+  /*
+   * Controller: Logout
+   */
+  public logout = async (req: Request, res: Response) => {
+    try {
+      const { refreshToken } = req.body;
+      const result = await authService.logoutUser(refreshToken);
+      return sendSuccess(res, message.auth.logout.LOGOUT_SUCCESS, result, 200);
+    } catch (err: any) {
+      return sendError(
+        res,
+        err.message || message.auth.logout.LOGOUT_FAILURE,
+        undefined,
+        err.status || 500,
+      );
+    }
+  };
+
+  /*
+   * Controller: Logout from all devices
+   */
+  public logoutFromAllDevices = async (req: Request, res: Response) => {
+    try {
+      const { refreshToken } = req.body;
+      const result = await authService.logoutUserFromAllDevices(refreshToken);
+      return sendSuccess(res, message.auth.logout.LOGOUT_FROM_ALL_DEVICES_SUCCESS, result, 200);
+    } catch (err: any) {
+      return sendError(
+        res,
+        err.message || message.auth.logout.LOGOUT_FAILURE,
         undefined,
         err.status || 500,
       );
