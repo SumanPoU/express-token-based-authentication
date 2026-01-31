@@ -66,6 +66,17 @@ const message = {
       USER_NOT_FOUND: 'User not found.',
       USER_DISABLED: 'User account is disabled.',
       USER_DELETED: 'User account is deleted.',
+      USER_CREATE_SUCCESS: 'User created successfully.',
+      USER_CREATE_FAILURE: 'Failed to create user. Please try again later.',
+      USER_UPDATE_SUCCESS: 'User updated successfully.',
+      USER_UPDATE_FAILURE: 'Failed to update user. Please try again later.',
+      USER_DELETE_SUCCESS: 'User deleted successfully.',
+      USER_DELETE_FAILURE: 'Failed to delete user. Please try again later.',
+      USER_LIST_FAILURE: 'Failed to list users. Please try again later.',
+      USER_RETRIEVE_SUCCESS: 'User retrieved successfully.',
+      USER_RETRIEVE_FAILURE: 'Failed to retrieve user. Please try again later.',
+      USER_SOFT_DELETE_SUCCESS: 'User soft deleted successfully.',
+      USER_SOFT_DELETE_FAILURE: 'Failed to soft delete user. Please try again later.',
     },
 
     password: {
@@ -88,13 +99,14 @@ const message = {
     logout: {
       LOGOUT_SUCCESS: 'Successfully logged out.',
       LOGOUT_FAILURE: 'Failed to log out. Please try again later.',
-      SESSION_NOT_FOUND: 'Session not found or already logged out',
+      SESSION_NOT_FOUND: 'Session not found or already logged out.',
       LOGOUT_FROM_ALL_DEVICES_SUCCESS: 'Successfully logged out from all devices.',
     },
   },
+
   middleware: {
-    AUTHORIZATION_HEADER_MISSING: 'Authorization header missing or malformed',
-    INVALID_OR_EXPIRED_TOKEN: 'Invalid or expired token',
+    AUTHORIZATION_HEADER_MISSING: 'Authorization header missing or malformed.',
+    INVALID_OR_EXPIRED_TOKEN: 'Invalid or expired token.',
   },
 };
 

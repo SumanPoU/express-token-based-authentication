@@ -1,40 +1,54 @@
 import { z } from 'zod';
 
 /**
- * Helper: Disallow dangerous characters commonly used in SQL injection
+ * Safe string helper: blocks dangerous characters and SQL keywords
+ * No .transform() here to keep string methods like .email() and .url()
  */
-const noSqlInjection = (fieldName: string) =>
+export const safeString = (fieldName: string, min = 1, max = 255) =>
   z
     .string()
-    .min(1, `${fieldName} is required`)
-    .max(255, `${fieldName} is too long`)
-    .refine((val) => !/[;'"\-\-]/.test(val), {
-      message: `${fieldName} contains invalid characters`,
-    })
-    .transform((val) => val.trim());
+    .min(min, `${fieldName} is required`)
+    .max(max, `${fieldName} is too long`)
+    .refine(
+      (val) =>
+        !/(\b(SELECT|INSERT|UPDATE|DELETE|DROP|TRUNCATE|ALTER|EXEC|UNION)\b|;|--|'|"|`)/i.test(val),
+      { message: `${fieldName} contains invalid characters or SQL keywords` },
+    );
 
 /**
- * Username: letters, numbers, underscores only
+ * Username: letters, numbers, underscores only + safe
  */
-const safeUsername = z
+export const safeUsername = z
   .string()
   .min(3, 'Username must be at least 3 characters')
   .max(32, 'Username too long')
-  .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores');
+  .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores')
+  .refine(
+    (val) => !/(\b(SELECT|INSERT|UPDATE|DELETE|DROP|TRUNCATE|ALTER|EXEC|UNION)\b)/i.test(val),
+    {
+      message: 'Username cannot contain SQL keywords',
+    },
+  );
 
 /**
- * Display Name: letters, spaces, basic punctuation
+ * Display Name: letters, spaces, basic punctuation + safe
  */
-const safeDisplayName = z
+export const safeDisplayName = z
   .string()
   .min(1, 'Name is required')
   .max(64, 'Name too long')
-  .regex(/^[a-zA-Z0-9 .'-]+$/, 'Name contains invalid characters');
+  .regex(/^[a-zA-Z0-9 .'-]+$/, 'Name contains invalid characters')
+  .refine(
+    (val) => !/(\b(SELECT|INSERT|UPDATE|DELETE|DROP|TRUNCATE|ALTER|EXEC|UNION)\b)/i.test(val),
+    {
+      message: 'Display name cannot contain SQL keywords',
+    },
+  );
 
 /**
- * Strong password (unchanged)
+ * Strong password
  */
-const StrongPasswordSchema = z
+export const StrongPasswordSchema = z
   .string()
   .min(8, 'Password must be at least 8 characters')
   .max(64, 'Password must be at most 64 characters')
@@ -44,7 +58,7 @@ const StrongPasswordSchema = z
   .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character');
 
 /**
- * Email OR Username (at least one)
+ * Email OR Username
  */
 const IdentifierSchema = z
   .object({
@@ -88,7 +102,7 @@ export const ForgotPasswordSchema = IdentifierSchema;
 
 // Reset Password
 export const ForgetPasswordSetSchema = IdentifierSchema.extend({
-  token: noSqlInjection('forget password token'),
+  token: safeString('forget password token'),
   password: StrongPasswordSchema,
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -118,14 +132,15 @@ export const ResendVerificationSchema = z.object({
   email: z.string().email('Invalid email address'),
 });
 
-//verify email
+// Verify Email
 export const VerifyEmailSchema = z.object({
-  token: noSqlInjection('verify email token'),
+  token: safeString('verify email token'),
   email: z.string().email('Invalid email address'),
 });
 
+// Logout
 export const LogoutSchema = z.object({
-  refreshToken: z.string().min(1, 'Refresh token is required'),
+  refreshToken: safeString('refreshToken'),
 });
 
 /**
