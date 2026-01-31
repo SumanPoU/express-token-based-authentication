@@ -7,7 +7,11 @@ import * as UserSchemas from '@/validation/user.schema';
 const router = Router();
 const userController = new UserController();
 router.use(authenticateAcceessToken);
-router.post('/create-user', validate({ body: UserSchemas.CreateUserSchema }), userController.createUser);
+router.post(
+  '/create-user',
+  validate({ body: UserSchemas.CreateUserSchema }),
+  userController.createUser,
+);
 
 router.put(
   'update-user/:id',
@@ -42,6 +46,10 @@ router.patch(
   userController.setUserStatus,
 );
 
-router.get('/get-users', validate({ query: UserSchemas.UserFilterSchema }), userController.listUsers);
+router.get(
+  '/get-users',
+  validate({ query: UserSchemas.UserFilterSchema }),
+  userController.listUsers,
+);
 
 export default router;
