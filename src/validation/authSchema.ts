@@ -95,6 +95,21 @@ export const RegisterSchema = z
 // Login
 export const LoginSchema = IdentifierSchema.extend({
   password: StrongPasswordSchema,
+  deviceInfo: z.string().optional(),
+  ipAddress: z.string().optional(),
+  userAgent: z.string().optional(),
+});
+
+// Set First Login Password
+export const SetFirstLoginPasswordSchema = IdentifierSchema.extend({
+  newPassword: StrongPasswordSchema,
+  confirmPassword: z.string(),
+  deviceInfo: z.string().optional(),
+  ipAddress: z.string().optional(),
+  userAgent: z.string().optional(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  path: ['confirmPassword'],
+  message: 'Passwords do not match',
 });
 
 // Forgot Password

@@ -37,6 +37,7 @@ model User {
   userName      String?   @unique
   email         String    @unique
   emailVerified DateTime?
+  isFirstLogin  Boolean   @default(false)
   password      String?
   image         String?
   isDisabled    Boolean   @default(false)

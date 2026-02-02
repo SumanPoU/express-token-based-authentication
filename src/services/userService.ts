@@ -8,8 +8,12 @@ import { Role } from '../types/role';
 import logger from '../middleware/logger';
 import { CREDENTIALS_TYPES, PROVIDER } from '../constant/user';
 import message from '../constant/message';
+import { generatePassword, hashPassword } from '@/lib/passwordHash.utils';
+import { AuthMailService } from '@/lib/authMail';
 
 export class UserService {
+  private authMailService = AuthMailService;
+
   constructor() {}
 
   /**
@@ -17,9 +21,13 @@ export class UserService {
    */
   public async createUser(input: CreateUserInput) {
     try {
+      const plainPassword = generatePassword();
+      const hashedPassword = await hashPassword(plainPassword);
       const user = await db.user.create({
         data: {
           ...input,
+          password: hashedPassword,
+          isFirstLogin: true,
           accounts: {
             create: {
               type: CREDENTIALS_TYPES.credentials,
@@ -29,6 +37,12 @@ export class UserService {
           },
         },
       });
+
+      await this.authMailService.sendAdminEmail(
+        user.email,
+        user.displayName ?? 'User',
+        plainPassword,
+      );
 
       logger.info(`User created: ${user.id} (${user.email})`);
       return user;

@@ -10,6 +10,7 @@ import {
   ResendVerificationSchema,
   VerifyEmailSchema,
   LogoutSchema,
+  SetFirstLoginPasswordSchema,
 } from '../../validation/authSchema';
 import { authenticateAcceessToken, authenticateRefreshToken } from '@/middleware/authMiddleware';
 
@@ -23,6 +24,11 @@ router.post(
   authController.resendVerificationEmail,
 );
 router.post('/login', validate({ body: LoginSchema }), authController.loginUser);
+router.post(
+  '/set-first-login-password',
+  validate({ body: SetFirstLoginPasswordSchema }),
+  authController.setFirstLoginPassword,
+);
 router.post('/verify-email', validate({ body: VerifyEmailSchema }), authController.verifyEmail);
 router.post(
   '/send-forgot-password-email',

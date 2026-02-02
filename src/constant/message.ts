@@ -8,6 +8,10 @@ const message = {
         'Email is not verified. Please verify your email before logging in.',
       PASSWORD_INVALID: 'Invalid password.',
       LOGIN_FAILURE: 'Login failed. Please try again later.',
+      FIRST_LOGIN_PASSWORD_REQUIRED: 'First login detected. Please set a new password to continue.',
+      FIRST_LOGIN_ALREADY_COMPLETED: 'First login already completed.',
+      PASSWORD_SET_SUCCESS: 'Password set successfully.',
+      PASSWORD_SET_FAILURE: 'Failed to set password. Please try again later.',
     },
 
     register: {
@@ -77,6 +81,7 @@ const message = {
       USER_RETRIEVE_FAILURE: 'Failed to retrieve user. Please try again later.',
       USER_SOFT_DELETE_SUCCESS: 'User soft deleted successfully.',
       USER_SOFT_DELETE_FAILURE: 'Failed to soft delete user. Please try again later.',
+      USER_NOT_AUTHENTICATED: 'User not authenticated.',
     },
 
     password: {
@@ -107,6 +112,16 @@ const message = {
   middleware: {
     AUTHORIZATION_HEADER_MISSING: 'Authorization header missing or malformed.',
     INVALID_OR_EXPIRED_TOKEN: 'Invalid or expired token.',
+  },
+  permission: {
+    PERMISSION_NOT_FOUND: 'Permission not found.',
+    PERISSION_NOT_AUTHENTICATED: 'You do not have permission to perform this action',
+    PERMISSION_ALREADY_EXISTS: 'Permission already exists.',
+    FAILED_TO_CHECK_PERMISSION: 'Failed to check permission. Please try again later.',
+    PERMISSION_CREATE_FAILURE: 'Failed to create permission. Please try again later.',
+    PERMISSION_UPDATE_FAILURE: 'Failed to update permission. Please try again later.',
+    PERMISSION_DELETE_FAILURE: 'Failed to delete permission. Please try again later.',
+    PERMISSION_LIST_FAILURE: 'Failed to list permissions. Please try again later.',
   },
 };
 

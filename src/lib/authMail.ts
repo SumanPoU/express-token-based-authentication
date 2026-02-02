@@ -51,4 +51,37 @@ export class AuthMailService {
       throw error;
     }
   }
+
+  /**
+   * Send login credentials to a user created by the admin (via admin panel)
+   */
+  static async sendAdminEmail(email: string, name: string, password: string) {
+    const html = `
+    <p>Hi ${name}, 👋</p>
+
+    <p>Your account has been successfully created by the administrator.</p>
+
+    <p><strong>Login details:</strong></p>
+    <p>Email: <strong>${email}</strong></p>
+    <p>Password: <strong>${password}</strong></p>
+
+    <p>Please log in and change your password immediately for security reasons.</p>
+
+    <p>Welcome aboard! 🎉</p>
+  `;
+
+    try {
+      const info = await sendMail({
+        to: email,
+        subject: 'Your Account Login Credentials',
+        html,
+      });
+
+      logger.info(`📧 Login credentials sent to ${email}`);
+      return info;
+    } catch (error) {
+      logger.error('❌ Failed to send login credentials', error);
+      throw error;
+    }
+  }
 }

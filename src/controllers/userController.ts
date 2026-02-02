@@ -112,7 +112,7 @@ export class UserController {
         limit,
       });
 
-      return sendSuccess(res, message.auth.user.USER_RETRIVE_SUCCESS, {
+      return sendSuccess(res, message.auth.user.USER_RETRIEVE_SUCCESS, {
         users: result.data,
         meta: result.meta,
       });
@@ -120,7 +120,7 @@ export class UserController {
       return sendError(
         res,
         error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-        error.message || message.auth.user.USER_RETRIVE_FAILURE,
+        error.message || message.auth.user.USER_RETRIEVE_FAILURE,
       );
     }
   }

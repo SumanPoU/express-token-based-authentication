@@ -112,6 +112,16 @@ export class AuthService {
     if (!isPasswordValid)
       throw new AppError(message.auth.login.PASSWORD_INVALID, httpStatus.UNAUTHORIZED);
 
+    if (user.isFirstLogin) {
+      return {
+        isFirstLogin: true,
+        user: {
+          id: user.id,
+          email: user.email,
+        },
+      };
+    }
+
     const userPayload = {
       id: user.id,
       email: user.email,
@@ -125,6 +135,64 @@ export class AuthService {
     await createUserSession(user.id, tokens.refreshToken, deviceInfo, ipAddress, userAgent);
 
     return { user: userPayload, tokens };
+  }
+
+  /**
+   * Set new password for first login
+   */
+  public async setFirstLoginPassword({
+    userId,
+    newPassword,
+    deviceInfo,
+    ipAddress,
+    userAgent,
+  }: {
+    userId: string;
+    newPassword: string;
+    deviceInfo?: string;
+    ipAddress?: string;
+    userAgent?: string;
+  }) {
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
+
+    if (!user) throw new AppError(message.auth.user.USER_NOT_FOUND, httpStatus.NOT_FOUND);
+
+    if (!user.isFirstLogin)
+      throw new AppError(message.auth.login.FIRST_LOGIN_ALREADY_COMPLETED, httpStatus.BAD_REQUEST);
+
+    if (user.isDisabled) throw new AppError(message.auth.user.USER_DISABLED, httpStatus.FORBIDDEN);
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        password: hashedPassword,
+        isFirstLogin: false,
+        emailVerified: user.emailVerified ?? new Date(),
+      },
+    });
+
+    const userPayload = {
+      id: user.id,
+      email: user.email,
+      userName: user.userName,
+      displayName: user.displayName,
+      roleId: user.roleId,
+      role: user.role ? [{ id: user.role.id, name: user.role.name }] : [],
+    };
+
+    const tokens = jwtService.generateAuthTokens(userPayload);
+
+    await createUserSession(user.id, tokens.refreshToken, deviceInfo, ipAddress, userAgent);
+
+    return {
+      user: userPayload,
+      tokens,
+    };
   }
 
   /*
