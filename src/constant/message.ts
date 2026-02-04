@@ -122,6 +122,25 @@ const message = {
     PERMISSION_UPDATE_FAILURE: 'Failed to update permission. Please try again later.',
     PERMISSION_DELETE_FAILURE: 'Failed to delete permission. Please try again later.',
     PERMISSION_LIST_FAILURE: 'Failed to list permissions. Please try again later.',
+    CREATE_SUCCESS: 'Permission created successfully.',
+    CREATE_FAILED: 'Failed to create permission. Please try again later.',
+    UPDATE_SUCCESS: 'Permission updated successfully.',
+    UPDATE_FAILED: 'Failed to update permission. Please try again later.',
+    DELETE_SUCCESS: 'Permission deleted successfully.',
+    DELETE_FAILED: 'Failed to delete permission. Please try again later.',
+  },
+
+  permissionGroup: {
+    NOT_FOUND: 'Permission group not found.',
+    ALREADY_EXISTS: 'Permission group already exists.',
+    CREATE_SUCCESS: 'Permission group created successfully.',
+    UPDATE_SUCCESS: 'Permission group updated successfully.',
+    DELETE_SUCCESS: 'Permission group deleted successfully.',
+    LIST_SUCCESS: 'Permission groups listed successfully.',
+    CREATE_FAILED: 'Failed to create permission group. Please try again later.',
+    UPDATE_FAILED: 'Failed to update permission group. Please try again later.',
+    DELETE_FAILED: 'Failed to delete permission group. Please try again later.',
+    LIST_FAILED: 'Failed to list permission groups. Please try again later.',
   },
 };
 
