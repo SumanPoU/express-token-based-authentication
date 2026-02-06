@@ -18,7 +18,7 @@ router.post(
 );
 
 router.put(
-  'update-permission-group/:id',
+  '/update-permission-group/:id',
   checkPermission(permission.permissionGroups.update),
   validate({
     params: PermissionSchemas.PermissionGroupIdParamSchema,
@@ -28,14 +28,14 @@ router.put(
 );
 
 router.get(
-  'list-permission-groups',
+  '/list-permission-groups',
   checkPermission(permission.permissionGroups.list),
   validate({ query: PermissionSchemas.PermissionFilterSchema }),
   permissionController.listPermissionGroups,
 );
 
 router.delete(
-  'delete-permission-group/:id',
+  '/delete-permission-group/:id',
   checkPermission(permission.permissionGroups.delete),
   validate({ params: PermissionSchemas.PermissionGroupIdParamSchema }),
   permissionController.deletePermissionGroup,
@@ -49,7 +49,7 @@ router.post(
 );
 
 router.put(
-  'update-permission/:id',
+  '/update-permission/:id',
   checkPermission(permission.permissions.update),
   validate({
     params: PermissionSchemas.PermissionIdParamSchema,
@@ -59,7 +59,7 @@ router.put(
 );
 
 router.delete(
-  'delete-permission/:id',
+  '/delete-permission/:id',
   checkPermission(permission.permissions.delete),
   validate({ params: PermissionSchemas.PermissionIdParamSchema }),
   permissionController.deletePermission,

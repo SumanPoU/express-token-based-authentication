@@ -8,6 +8,7 @@ import compressFilter from './lib/compressFilter.utils';
 import rateLimiter from './middleware/rateLimiter';
 import corsMiddleware from './config/cors';
 import helmetMiddleware from './config/helmet';
+import apiRouter from './routes/v1';
 
 const app: Application = express();
 
@@ -37,6 +38,9 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'Server is running!' });
 });
+
+// Mount API routes
+app.use('/api/v1', apiRouter);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {

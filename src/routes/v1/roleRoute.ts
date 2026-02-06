@@ -18,7 +18,7 @@ router.post(
 );
 
 router.put(
-  'update-role/:id',
+  '/update-role/:id',
   checkPermission(permission.roles.update),
   validate({
     params: RoleSchemas.RoleIdParamSchema,
@@ -28,7 +28,7 @@ router.put(
 );
 
 router.delete(
-  'delete-role/:id',
+  '/delete-role/:id',
   checkPermission(permission.roles.delete),
   validate({ params: RoleSchemas.RoleIdParamSchema }),
   roleController.deleteRole,

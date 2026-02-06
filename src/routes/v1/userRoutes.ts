@@ -17,7 +17,7 @@ router.post(
 );
 
 router.put(
-  'update-user/:id',
+  '/update-user/:id',
   checkPermission(permission.users.update),
   validate({
     params: UserSchemas.UserIdParamSchema,
@@ -27,7 +27,7 @@ router.put(
 );
 
 router.delete(
-  'hard-delete-user/:id',
+  '/hard-delete-user/:id',
   checkPermission(permission.users.delete),
   validate({ params: UserSchemas.UserIdParamSchema }),
   userController.deleteUser,

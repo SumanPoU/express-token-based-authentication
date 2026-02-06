@@ -28,14 +28,14 @@ router.put(
 );
 
 router.delete(
-  'delete-page/:id',
+  '/delete-page/:id',
   checkPermission(permission.pages.delete),
   validate({ params: PageSchemas.PageIdentifierParamSchema }),
   pageController.deletePage,
 );
 
 router.get(
-  'list-pages',
+  '/list-pages',
   checkPermission(permission.pages.list),
   validate({ query: PageSchemas.PageFilterSchema }),
   pageController.listPages,
