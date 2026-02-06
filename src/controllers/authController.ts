@@ -219,4 +219,23 @@ export class AuthController {
       );
     }
   };
+
+  /*
+   * Controller: Get user roles, premission, pages
+   */
+
+  public getUserRoles = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params as { id: string };
+      const userRoles = await authService.getUserRoles(id);
+      return sendSuccess(res, message.auth.user.USER_RETRIEVE_SUCCESS, userRoles);
+    } catch (err: any) {
+      return sendError(
+        res,
+        err.message || message.auth.user.USER_RETRIEVE_FAILURE,
+        undefined,
+        err.status || httpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  };
 }

@@ -19,6 +19,21 @@ const permissions = {
     delete: 'delete:permission',
     list: 'get:permissions',
   },
+  roles: {
+    create: 'create:role',
+    update: 'update:role',
+    delete: 'delete:role',
+    assignPermissions: 'patch:assignPermissions:role',
+    removePermissions: 'patch:removePermissions:role',
+    assignPages: 'patch:assignPages:role',
+    removePages: 'patch:removePages:role',
+  },
+  pages: {
+    create: 'create:page',
+    update: 'update:page',
+    delete: 'delete:page',
+    list: 'get:pages',
+  },
 };
 
 export default permissions;

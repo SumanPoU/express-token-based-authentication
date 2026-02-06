@@ -11,6 +11,7 @@ import {
   VerifyEmailSchema,
   LogoutSchema,
   SetFirstLoginPasswordSchema,
+  GetUserRolesSchema,
 } from '../../validation/authSchema';
 import { authenticateAcceessToken, authenticateRefreshToken } from '@/middleware/authMiddleware';
 
@@ -58,6 +59,13 @@ router.post(
   validate({ body: LogoutSchema }),
   authenticateRefreshToken,
   authController.logoutFromAllDevices,
+);
+
+router.get(
+  '/get-user-roles-permissions',
+  validate({ body: GetUserRolesSchema }),
+  authenticateAcceessToken,
+  authController.getUserRoles,
 );
 
 export default router;

@@ -158,6 +158,11 @@ export const LogoutSchema = z.object({
   refreshToken: safeString('refreshToken'),
 });
 
+// Get user roles
+export const GetUserRolesSchema = z.object({
+ accessToken: safeString('accessToken'),
+});
+
 /**
  * Types
  */

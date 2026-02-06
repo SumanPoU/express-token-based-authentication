@@ -142,6 +142,35 @@ const message = {
     DELETE_FAILED: 'Failed to delete permission group. Please try again later.',
     LIST_FAILED: 'Failed to list permission groups. Please try again later.',
   },
+
+  role: {
+    NOT_FOUND: 'Role not found.',
+    CREATE_FAILED: 'Failed to create role.',
+    CREATE_SUCCESS: 'Role created successfully.',
+    UPDATE_SUCCESS: 'Role updated successfully.',
+    DELETE_SUCCESS: 'Role deleted successfully.',
+    PERMISSION_ASSIGN_SUCCESS: 'Permissions assigned to role successfully.',
+    PERMISSION_REMOVE_SUCCESS: 'Permissions removed from role successfully.',
+    UPDATE_FAILED: 'Failed to update role.',
+    DELETE_FAILED: 'Failed to delete role.',
+    PERMISSION_ASSIGN_FAILED: 'Failed to assign permissions to role.',
+    PERMISSION_REMOVE_FAILED: 'Failed to remove permissions from role.',
+    PAGE_ASSIGN_SUCCESS: 'Pages assigned to role successfully.',
+    PAGE_REMOVE_SUCCESS: 'Pages removed from role successfully.',
+    PAGE_ASSIGN_FAILED: 'Failed to assign pages to role.',
+    PAGE_REMOVE_FAILED: 'Failed to remove pages from role.',
+  },
+  page:{
+    CREATE_FAILED:'Failed to create page.',
+    CREATE_SUCCESS:'Page created successfully.',
+    UPDATE_SUCCESS:'Page updated successfully.',
+    DELETE_SUCCESS:'Page deleted successfully.',
+    LIST_SUCCESS:'Pages listed successfully.',
+    NOT_FOUND:'Page not found.',
+    UPDATE_FAILED:'Failed to update page.',
+    DELETE_FAILED:'Failed to delete page.',
+    LIST_FAILED:'Failed to list pages.',
+  }
 };
 
 export default message;

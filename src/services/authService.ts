@@ -345,6 +345,67 @@ export class AuthService {
   }
 
   /**
+   * Get roles , permisison, pages
+   */
+  public async getUserRoles(userId: string) {
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      include: {
+        role: {
+          select: {
+            id: true,
+            name: true,
+            permissions: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        pages: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+          },
+        },
+        permissions: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new AppError(message.auth.user.USER_NOT_FOUND, httpStatus.NOT_FOUND);
+    }
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        userName: user.userName,
+        displayName: user.displayName,
+
+        roleId: user.role?.id ?? null,
+        role: user.role
+          ? {
+              id: user.role.id,
+              name: user.role.name,
+              permissions: user.role.permissions,
+            }
+          : null,
+
+        pages: user.pages,
+        permissions: user.permissions,
+      },
+    };
+  }
+
+  /**
    * Private helper: create token + send verification email
    *
    * @param email - user's email
