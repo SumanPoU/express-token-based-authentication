@@ -160,7 +160,7 @@ export const LogoutSchema = z.object({
 
 // Get user roles
 export const GetUserRolesSchema = z.object({
- accessToken: safeString('accessToken'),
+  accessToken: safeString('accessToken'),
 });
 
 /**

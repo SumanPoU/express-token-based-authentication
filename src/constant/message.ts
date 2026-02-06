@@ -160,17 +160,17 @@ const message = {
     PAGE_ASSIGN_FAILED: 'Failed to assign pages to role.',
     PAGE_REMOVE_FAILED: 'Failed to remove pages from role.',
   },
-  page:{
-    CREATE_FAILED:'Failed to create page.',
-    CREATE_SUCCESS:'Page created successfully.',
-    UPDATE_SUCCESS:'Page updated successfully.',
-    DELETE_SUCCESS:'Page deleted successfully.',
-    LIST_SUCCESS:'Pages listed successfully.',
-    NOT_FOUND:'Page not found.',
-    UPDATE_FAILED:'Failed to update page.',
-    DELETE_FAILED:'Failed to delete page.',
-    LIST_FAILED:'Failed to list pages.',
-  }
+  page: {
+    CREATE_FAILED: 'Failed to create page.',
+    CREATE_SUCCESS: 'Page created successfully.',
+    UPDATE_SUCCESS: 'Page updated successfully.',
+    DELETE_SUCCESS: 'Page deleted successfully.',
+    LIST_SUCCESS: 'Pages listed successfully.',
+    NOT_FOUND: 'Page not found.',
+    UPDATE_FAILED: 'Failed to update page.',
+    DELETE_FAILED: 'Failed to delete page.',
+    LIST_FAILED: 'Failed to list pages.',
+  },
 };
 
 export default message;
